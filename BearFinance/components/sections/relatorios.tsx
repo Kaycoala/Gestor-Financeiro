@@ -121,7 +121,7 @@ export function Relatorios() {
       },
       tooltip: {
         callbacks: {
-          label: function(context: TooltipItem<'doughnut'>) {
+          label: function(context: TooltipItem<'doughnut'> | TooltipItem<'pie'>) {
             const value = typeof context.raw === 'number' ? context.raw : 0
             return `${context.label}: ${formatCurrency(value)}`
           }
