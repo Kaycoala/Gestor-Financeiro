@@ -70,8 +70,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Nova notificacao',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: '/icons/icon-192x192.jpg',
+    badge: '/icons/icon-72x72.jpg',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
