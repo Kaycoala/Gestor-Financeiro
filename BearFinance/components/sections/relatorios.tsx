@@ -121,7 +121,31 @@ export function Relatorios() {
       },
       tooltip: {
         callbacks: {
-          label: function(context: TooltipItem<'doughnut'> | TooltipItem<'pie'>) {
+          label: function(context: TooltipItem<'doughnut'>) {
+            const value = typeof context.raw === 'number' ? context.raw : 0
+            return `${context.label}: ${formatCurrency(value)}`
+          }
+        }
+      }
+    }
+  }
+
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          color: textColor,
+          padding: 16,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: TooltipItem<'pie'>) {
             const value = typeof context.raw === 'number' ? context.raw : 0
             return `${context.label}: ${formatCurrency(value)}`
           }
@@ -131,11 +155,19 @@ export function Relatorios() {
   }
 
   const barOptions = {
-    ...chartOptions,
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      ...chartOptions.plugins,
       legend: {
         display: false
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: TooltipItem<'bar'>) {
+            const value = typeof context.raw === 'number' ? context.raw : 0
+            return `${context.label}: ${formatCurrency(value)}`
+          }
+        }
       }
     },
     scales: {
@@ -203,7 +235,7 @@ export function Relatorios() {
                     borderWidth: 0
                   }]
                 }}
-                options={chartOptions}
+                options={pieOptions}
               />
             ) : (
               <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
