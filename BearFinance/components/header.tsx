@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, LogOut, Cloud, Sun, Moon, Settings, User } from 'lucide-react'
+import { ChevronDown, LogOut, Cloud, Sun, Moon } from 'lucide-react'
 import { FirebaseManager } from '@/lib/firebase'
 import { useData } from '@/lib/data-context'
 

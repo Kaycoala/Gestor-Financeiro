@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, Receipt, Calendar, CreditCard, BarChart3, Sun, Moon, Check } from 'lucide-react'
+import { LayoutDashboard, Receipt, Calendar, CreditCard, BarChart3, Sun, Moon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface SidebarProps {

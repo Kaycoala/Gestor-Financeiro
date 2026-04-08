@@ -34,8 +34,10 @@ const SESSION_KEY = 'gestor_financas_session'
 // CRYPTO UTILITIES
 // ========================================
 
-function stringToArrayBuffer(str: string): Uint8Array {
-  return new TextEncoder().encode(str)
+function stringToArrayBuffer(str: string): ArrayBuffer {
+  const encoder = new TextEncoder()
+  const uint8Array = encoder.encode(str)
+  return uint8Array.buffer.slice(uint8Array.byteOffset, uint8Array.byteOffset + uint8Array.byteLength)
 }
 
 function arrayBufferToString(buffer: ArrayBuffer): string {
@@ -98,7 +100,9 @@ async function encryptData(plaintext: string, key: CryptoKey): Promise<string | 
     combined.set(iv, 0)
     combined.set(new Uint8Array(ciphertext), iv.length)
 
-    return arrayBufferToBase64(combined.buffer)
+    // Create a proper ArrayBuffer copy to avoid type issues
+    const resultBuffer = combined.buffer.slice(combined.byteOffset, combined.byteOffset + combined.byteLength)
+    return arrayBufferToBase64(resultBuffer)
   } catch (error) {
     console.error('Encryption error:', error)
     return null

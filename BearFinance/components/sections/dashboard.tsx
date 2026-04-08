@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useData } from '@/lib/data-context'
-import { DollarSign, TrendingDown, TrendingUp, PiggyBank, Edit2, X, Check } from 'lucide-react'
+import { TrendingDown, TrendingUp, PiggyBank, Edit2, X, Check } from 'lucide-react'
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
