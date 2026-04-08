@@ -11,7 +11,8 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  Title
+  Title,
+  type TooltipItem
 } from 'chart.js'
 
 ChartJS.register(
@@ -120,8 +121,9 @@ export function Relatorios() {
       },
       tooltip: {
         callbacks: {
-          label: function(context: { label?: string; raw?: number }) {
-            return `${context.label}: ${formatCurrency(context.raw || 0)}`
+          label: function(context: TooltipItem<'doughnut'>) {
+            const value = typeof context.raw === 'number' ? context.raw : 0
+            return `${context.label}: ${formatCurrency(value)}`
           }
         }
       }
