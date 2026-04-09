@@ -8,11 +8,11 @@ interface MobileNavProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'Inicio', icon: LayoutDashboard },
+  { id: 'dashboard', label: 'Início', icon: LayoutDashboard },
   { id: 'gastos', label: 'Fixos', icon: Receipt },
   { id: 'gastosMensais', label: 'Mensais', icon: Calendar },
-  { id: 'cartoes', label: 'Cartoes', icon: CreditCard },
-  { id: 'relatorios', label: 'Graficos', icon: BarChart3 },
+  { id: 'cartoes', label: 'Cartões', icon: CreditCard },
+  { id: 'relatorios', label: 'Gráficos', icon: BarChart3 },
 ]
 
 export function MobileNav({ activeSection, onSectionChange }: MobileNavProps) {

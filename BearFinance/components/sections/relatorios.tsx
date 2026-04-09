@@ -78,7 +78,7 @@ export function Relatorios() {
   // Dados por tipo
   const dadosPorTipo = useMemo(() => {
     return {
-      labels: ['Gastos Fixos', 'Gastos Mensais', 'Cartoes', 'Parcelas'],
+      labels: ['Gastos Fixos', 'Gastos Mensais', 'Cartões', 'Parcelas'],
       values: [
         getTotalGastosFixos(),
         getTotalGastosMensais(),
@@ -191,7 +191,7 @@ export function Relatorios() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Relatorios</h2>
+        <h2 className="text-lg font-semibold text-foreground">Relatórios</h2>
         <p className="text-sm text-muted-foreground">Visualize seus gastos</p>
       </div>
 
@@ -281,7 +281,7 @@ export function Relatorios() {
           <p className="text-lg font-bold text-success">{formatCurrency(getTotalGastosMensais())}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4 text-center">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Cartoes</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Cartões</p>
           <p className="text-lg font-bold text-destructive">{formatCurrency(getTotalCartoes())}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4 text-center">

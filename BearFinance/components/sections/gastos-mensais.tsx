@@ -70,7 +70,7 @@ export function GastosMensais() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-foreground">Gastos Mensais</h2>
-          <p className="text-sm text-muted-foreground">Aparecem apenas neste mes</p>
+          <p className="text-sm text-muted-foreground">Aparecem apenas neste mês</p>
         </div>
         <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full">
           Total: {formatCurrency(totalGastosMensais)}
@@ -80,7 +80,7 @@ export function GastosMensais() {
       {/* List */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {dadosMesAtual.gastosMensais.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">Nenhum gasto mensal cadastrado</p>
+          <p className="text-sm text-muted-foreground text-center py-8">Nenhum gasto mensal cadastrado.</p>
         ) : (
           <div className="divide-y divide-border">
             {dadosMesAtual.gastosMensais.map((gasto) => {

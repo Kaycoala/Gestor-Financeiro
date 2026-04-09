@@ -7,7 +7,7 @@ import { FirebaseManager } from '@/lib/firebase'
 import { useData } from '@/lib/data-context'
 
 const meses = [
-  'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ]
 
@@ -84,7 +84,7 @@ export function Header({ title }: HeaderProps) {
                   className="fixed inset-0 z-40" 
                   onClick={() => setShowMonthPicker(false)} 
                 />
-                <div className="absolute right-0 top-full mt-2 bg-card border border-border rounded-lg shadow-lg z-50 p-4 w-72">
+                <div className="absolute right-0 sm:right-0 left-0 sm:left-auto top-full mt-2 bg-card border border-border rounded-lg shadow-lg z-50 p-4 w-[calc(100vw-2rem)] sm:w-72 mx-auto sm:mx-0">
                   {/* Year selector */}
                   <div className="flex items-center justify-between mb-4">
                     <button 
@@ -144,7 +144,7 @@ export function Header({ title }: HeaderProps) {
                 {usuario?.username?.charAt(0).toUpperCase() || 'U'}
               </div>
               <span className="hidden sm:inline text-sm font-medium text-foreground">
-                {usuario?.username || 'Usuario'}
+                {usuario?.username || 'Usuário'}
               </span>
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </button>

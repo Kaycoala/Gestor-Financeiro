@@ -79,7 +79,7 @@ export function GastosFixos() {
       {/* List */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {dadosGlobais.gastosFixos.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">Nenhum gasto fixo cadastrado</p>
+          <p className="text-sm text-muted-foreground text-center py-8">Nenhum gasto fixo cadastrado.</p>
         ) : (
           <div className="divide-y divide-border">
             {dadosGlobais.gastosFixos.map((gasto) => {
