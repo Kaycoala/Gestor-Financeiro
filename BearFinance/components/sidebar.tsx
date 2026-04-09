@@ -13,8 +13,8 @@ const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'gastos', label: 'Gastos Fixos', icon: Receipt },
   { id: 'gastosMensais', label: 'Gastos Mensais', icon: Calendar },
-  { id: 'cartoes', label: 'Cartoes', icon: CreditCard },
-  { id: 'relatorios', label: 'Relatorios', icon: BarChart3 },
+  { id: 'cartoes', label: 'Cartões', icon: CreditCard },
+  { id: 'relatorios', label: 'Relatórios', icon: BarChart3 },
 ]
 
 export function Sidebar({ activeSection, onSectionChange, isSaving }: SidebarProps) {
@@ -35,7 +35,7 @@ export function Sidebar({ activeSection, onSectionChange, isSaving }: SidebarPro
     <aside className="hidden md:flex fixed top-0 left-0 h-screen w-60 bg-card border-r border-border flex-col z-50">
       {/* Header */}
       <div className="p-5 border-b border-border">
-        <h1 className="text-lg font-bold text-foreground">Gestor de Financas</h1>
+        <h1 className="text-lg font-bold text-foreground">Gestor de Finanças</h1>
       </div>
 
       {/* Navigation */}

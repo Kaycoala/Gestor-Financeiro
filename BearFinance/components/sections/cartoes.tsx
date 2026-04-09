@@ -81,8 +81,8 @@ export function Cartoes() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">Cartoes de Credito</h2>
-          <p className="text-sm text-muted-foreground">Itens do cartao por banco</p>
+          <h2 className="text-lg font-semibold text-foreground">Cartões de Crédito</h2>
+          <p className="text-sm text-muted-foreground">Itens do cartão por banco</p>
         </div>
         <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full">
           Total: {formatCurrency(totalCartoes)}
@@ -205,7 +205,7 @@ export function Cartoes() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">Descricao</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Descrição</label>
                 <input
                   type="text"
                   value={formData.descricao}

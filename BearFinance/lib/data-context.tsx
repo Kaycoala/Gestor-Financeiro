@@ -49,9 +49,10 @@ interface DataContextType {
   adicionarBanco: (nome: string) => void
   removerBanco: (nome: string) => void
   
-  // Poupanca
+  // Poupança
   setPoupancaTotal: (valor: number) => void
   setPoupancaMes: (valor: number) => void
+  adicionarParaPoupanca: (valor: number) => void
   
   // Calculos
   getTotalGastosFixos: () => number
@@ -484,6 +485,35 @@ export function DataProvider({ children }: { children: ReactNode }) {
         poupancaPorMes: { ...prev.poupancaPorMes, [chaveMes]: valor }
       }))
       marcarAlterado()
+    },
+
+    adicionarParaPoupanca: (valor) => {
+      // Adiciona o valor na poupança total e registra como gasto mensal para descontar do salário
+      setDadosGlobais(prev => ({
+        ...prev,
+        poupancaTotal: (prev.poupancaTotal || 0) + valor,
+        poupancaPorMes: { 
+          ...prev.poupancaPorMes, 
+          [chaveMes]: (prev.poupancaPorMes[chaveMes] || 0) + valor 
+        }
+      }))
+      
+      // Se for depósito (valor positivo), adiciona como gasto mensal para descontar da sobra
+      if (valor > 0) {
+        const gastoDescricao = `Depósito Poupança`
+        atualizarMesAtual({
+          gastosMensais: [...dadosMesAtual.gastosMensais, { 
+            id: Date.now(), 
+            nome: gastoDescricao, 
+            valor: valor,
+            categoriaId: null 
+          }]
+        })
+      } else {
+        // Se for retirada (valor negativo), remove o gasto correspondente se existir
+        // ou apenas atualiza a poupança
+        marcarAlterado()
+      }
     },
 
     getTotalGastosFixos: () => dadosGlobais.gastosFixos.reduce((acc, g) => acc + g.valor, 0),

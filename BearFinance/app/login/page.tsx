@@ -51,22 +51,22 @@ export default function LoginPage() {
     e.preventDefault()
     
     if (!/^[a-zA-Z0-9_]+$/.test(cadastroData.username)) {
-      showMessage('Nome de usuario deve conter apenas letras, numeros e underline', 'error')
+      showMessage('Nome de usuário deve conter apenas letras, números e underline', 'error')
       return
     }
 
     if (cadastroData.username.length < 3) {
-      showMessage('Nome de usuario deve ter no minimo 3 caracteres', 'error')
+      showMessage('Nome de usuário deve ter no mínimo 3 caracteres', 'error')
       return
     }
 
     if (cadastroData.senha !== cadastroData.confirmarSenha) {
-      showMessage('As senhas nao coincidem', 'error')
+      showMessage('As senhas não coincidem', 'error')
       return
     }
 
     if (cadastroData.senha.length < 6) {
-      showMessage('A senha deve ter no minimo 6 caracteres', 'error')
+      showMessage('A senha deve ter no mínimo 6 caracteres', 'error')
       return
     }
 
@@ -98,16 +98,16 @@ export default function LoginPage() {
           {/* Header */}
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Gestor de Financas
+              Gestor de Finanças
             </h1>
             <p className="text-muted-foreground text-sm">
-              Controle suas financas de forma simples e segura
+              Controle suas finanças de forma simples e segura
             </p>
             
             {/* Security Badge */}
             <div className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-success/10 border border-success/20 rounded-full text-success text-xs font-medium">
               <Shield className="w-4 h-4" />
-              Criptografia AES-256 de ponta a ponta
+              Criptografia AES-256 ponta a ponta
             </div>
           </div>
 
@@ -157,7 +157,7 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">
-                  Nome de Usuario
+                  Nome de Usuário
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -165,7 +165,7 @@ export default function LoginPage() {
                     type="text"
                     value={loginData.username}
                     onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
-                    placeholder="Seu nome de usuario"
+                    placeholder="Seu nome de usuário"
                     className="w-full h-12 pl-11 pr-4 bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow"
                     required
                   />
@@ -195,7 +195,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Sua senha e usada para descriptografar seus dados
+                  Sua senha é usada para descriptografar seus dados
                 </p>
               </div>
 
@@ -221,7 +221,7 @@ export default function LoginPage() {
             <form onSubmit={handleCadastro} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">
-                  Nome de Usuario
+                  Nome de Usuário
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -229,14 +229,14 @@ export default function LoginPage() {
                     type="text"
                     value={cadastroData.username}
                     onChange={(e) => setCadastroData({ ...cadastroData, username: e.target.value })}
-                    placeholder="Escolha um nome de usuario"
+                    placeholder="Escolha um nome de usuário"
                     pattern="[a-zA-Z0-9_]+"
                     className="w-full h-12 pl-11 pr-4 bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow"
                     required
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Apenas letras, numeros e underline
+                  Apenas letras, números e underline
                 </p>
               </div>
 
@@ -250,7 +250,7 @@ export default function LoginPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={cadastroData.senha}
                     onChange={(e) => setCadastroData({ ...cadastroData, senha: e.target.value })}
-                    placeholder="Minimo 6 caracteres"
+                    placeholder="Mínimo 6 caracteres"
                     minLength={6}
                     className="w-full h-12 pl-11 pr-12 bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow"
                     required
@@ -264,7 +264,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Essa senha sera usada para criptografar seus dados
+                  Essa senha será usada para criptografar seus dados
                 </p>
               </div>
 
@@ -305,9 +305,9 @@ export default function LoginPage() {
           {/* Crypto Notice */}
           <div className="mt-6 p-4 bg-secondary rounded-lg">
             <p className="text-xs text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">Seguranca:</strong> Seus dados financeiros sao 
-              criptografados com AES-256-GCM usando sua senha como chave. Nem mesmo nos podemos 
-              acessar seus dados. Se voce esquecer a senha, os dados nao poderao ser recuperados.
+              <strong className="text-foreground">Segurança:</strong> Seus dados financeiros são 
+              criptografados com AES-256-GCM usando sua senha como chave. Nem mesmo nós podemos 
+              acessar seus dados. Se você esquecer a senha, os dados não poderão ser recuperados.
             </p>
           </div>
 
