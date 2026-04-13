@@ -98,8 +98,8 @@ export default function LoginPage() {
           {/* Header */}
           <div className="text-center mb-6">
             <img 
-              src="/images/logo-gante.png" 
-              alt="Gante" 
+              src="/images/logo-pro-interface.png" 
+              alt="Pro Interface Softwares" 
               className="h-14 w-auto mx-auto mb-4"
             />
             <p className="text-muted-foreground text-sm">

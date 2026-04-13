@@ -1,19 +1,43 @@
 /**
- * Database Manager - MySQL/Hostinger Backend
+ * Firebase Manager - Firebase Auth + Firestore
  * Sistema completo de autenticacao e criptografia de dados
  */
 
-// API Base URL - Altere para o seu dominio na Hostinger
-const API_BASE_URL = typeof window !== 'undefined' 
-  ? `${window.location.origin}/api` 
-  : '/api'
+import { initializeApp, getApps } from 'firebase/app'
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User
+} from 'firebase/auth'
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc 
+} from 'firebase/firestore'
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAUdxfRrw1D6hYi_iG8DYCFIj5jQEh2TVw",
+  authDomain: "gestor-financa.firebaseapp.com",
+  projectId: "gestor-financa",
+  storageBucket: "gestor-financa.firebasestorage.app",
+  messagingSenderId: "132905908850",
+  appId: "1:132905908850:web:da487fdbfb6f69c116e0eb"
+}
+
+// Initialize Firebase
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+const auth = getAuth(app)
+const db = getFirestore(app)
 
 // Global state
 let currentUser: { uid: string; username: string } | null = null
 let userEncryptionKey: CryptoKey | null = null
-let sessionToken: string | null = null
 const SESSION_KEY = 'gante_session'
-const TOKEN_KEY = 'gante_token'
 
 // ========================================
 // CRYPTO UTILITIES
@@ -114,137 +138,155 @@ async function decryptData(encryptedBase64: string, key: CryptoKey): Promise<str
   }
 }
 
-// ========================================
-// API HELPERS
-// ========================================
-
-async function apiCall(endpoint: string, action: string, data: object = {}): Promise<Response> {
-  const url = `${API_BASE_URL}/${endpoint}.php?action=${action}`
-  
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  })
+// Helper to convert username to email format for Firebase Auth
+function usernameToEmail(username: string): string {
+  return `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@gestorfinanca.app`
 }
 
 // ========================================
-// FIREBASE MANAGER (Renamed but kept for compatibility)
+// FIREBASE MANAGER
 // ========================================
 
 export const FirebaseManager = {
   async init(): Promise<{ uid: string; username: string } | null> {
-    try {
-      // Try to restore session from localStorage
+    return new Promise((resolve) => {
+      // Check for saved session first
       if (typeof window !== 'undefined') {
         const savedSession = localStorage.getItem(SESSION_KEY)
-        const savedToken = localStorage.getItem(TOKEN_KEY)
-        
-        if (savedSession && savedToken) {
+        if (savedSession) {
           try {
             const sessionData = JSON.parse(savedSession)
-            sessionToken = savedToken
-            
-            // Verify token with backend
-            const response = await apiCall('auth', 'verify', { token: savedToken })
-            const result = await response.json()
-            
-            if (result.success) {
-              currentUser = {
-                uid: result.user.uid,
-                username: result.user.username
+            // We have saved session data, wait for Firebase auth state
+            const unsubscribe = onAuthStateChanged(auth, async (user) => {
+              unsubscribe()
+              if (user) {
+                currentUser = {
+                  uid: user.uid,
+                  username: sessionData.username || user.email?.split('@')[0] || 'Usuario'
+                }
+                
+                // Restore encryption key if we have the password stored
+                if (sessionData.keyData) {
+                  userEncryptionKey = await deriveEncryptionKey(sessionData.keyData, user.uid)
+                }
+                
+                resolve(currentUser)
+              } else {
+                localStorage.removeItem(SESSION_KEY)
+                resolve(null)
               }
-              
-              // Restore encryption key
-              if (sessionData.keyData) {
-                userEncryptionKey = await deriveEncryptionKey(sessionData.keyData, sessionData.uid)
-              }
-              
-              return currentUser
-            } else {
-              // Session expired, clean up
-              localStorage.removeItem(SESSION_KEY)
-              localStorage.removeItem(TOKEN_KEY)
-            }
+            })
           } catch {
             localStorage.removeItem(SESSION_KEY)
-            localStorage.removeItem(TOKEN_KEY)
+            resolve(null)
           }
+        } else {
+          // No saved session, check current auth state
+          const unsubscribe = onAuthStateChanged(auth, (user) => {
+            unsubscribe()
+            if (user) {
+              currentUser = {
+                uid: user.uid,
+                username: user.email?.split('@')[0] || 'Usuario'
+              }
+              resolve(currentUser)
+            } else {
+              resolve(null)
+            }
+          })
         }
+      } else {
+        resolve(null)
       }
-
-      return null
-    } catch (error) {
-      console.error('Init error:', error)
-      return null
-    }
+    })
   },
 
   async registrar(username: string, senha: string): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await apiCall('auth', 'register', { username, password: senha })
-      const result = await response.json()
-      return result
-    } catch (error) {
+      const email = usernameToEmail(username)
+      
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha)
+      const user = userCredential.user
+      
+      // Create user document in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        username: username,
+        createdAt: new Date().toISOString()
+      })
+      
+      return { success: true, message: 'Conta criada com sucesso!' }
+    } catch (error: unknown) {
       console.error('Registration error:', error)
+      
+      const firebaseError = error as { code?: string }
+      if (firebaseError.code === 'auth/email-already-in-use') {
+        return { success: false, message: 'Este usuario ja existe.' }
+      }
+      if (firebaseError.code === 'auth/weak-password') {
+        return { success: false, message: 'A senha deve ter pelo menos 6 caracteres.' }
+      }
+      
       return { success: false, message: 'Erro ao criar conta. Tente novamente.' }
     }
   },
 
   async login(username: string, senha: string): Promise<{ success: boolean; message?: string; user?: typeof currentUser }> {
     try {
-      const response = await apiCall('auth', 'login', { username, password: senha })
-      const result = await response.json()
-
-      if (!result.success) {
-        return { success: false, message: result.message }
-      }
-
+      const email = usernameToEmail(username)
+      
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha)
+      const user = userCredential.user
+      
+      // Get username from Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid))
+      const userData = userDoc.data()
+      
       currentUser = {
-        uid: result.user.uid,
-        username: result.user.username
+        uid: user.uid,
+        username: userData?.username || username
       }
-      sessionToken = result.token
 
       // Derive encryption key from password
-      userEncryptionKey = await deriveEncryptionKey(senha, result.user.uid)
+      userEncryptionKey = await deriveEncryptionKey(senha, user.uid)
 
       // Save session
       if (typeof window !== 'undefined') {
         localStorage.setItem(SESSION_KEY, JSON.stringify({
-          uid: result.user.uid,
-          username: result.user.username,
+          uid: user.uid,
+          username: currentUser.username,
           keyData: senha
         }))
-        localStorage.setItem(TOKEN_KEY, result.token)
       }
 
       return { success: true, user: currentUser }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Login error:', error)
+      
+      const firebaseError = error as { code?: string }
+      if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/invalid-credential') {
+        return { success: false, message: 'Usuario ou senha incorretos.' }
+      }
+      if (firebaseError.code === 'auth/wrong-password') {
+        return { success: false, message: 'Senha incorreta.' }
+      }
+      
       return { success: false, message: 'Erro ao fazer login. Tente novamente.' }
     }
   },
 
   async logout(): Promise<void> {
     try {
-      if (sessionToken) {
-        await apiCall('auth', 'logout', { token: sessionToken })
-      }
+      await signOut(auth)
     } catch (error) {
       console.error('Logout error:', error)
     }
 
     if (typeof window !== 'undefined') {
       localStorage.removeItem(SESSION_KEY)
-      localStorage.removeItem(TOKEN_KEY)
     }
     
     userEncryptionKey = null
     currentUser = null
-    sessionToken = null
   },
 
   async verificarAutenticacao(): Promise<typeof currentUser> {
@@ -265,19 +307,18 @@ export const FirebaseManager = {
   },
 
   async salvarDados(dadosXML: string): Promise<boolean> {
-    if (!currentUser || !userEncryptionKey || !sessionToken) return false
+    if (!currentUser || !userEncryptionKey) return false
 
     try {
       const dadosCriptografados = await encryptData(dadosXML, userEncryptionKey)
       if (!dadosCriptografados) return false
 
-      const response = await apiCall('dados', 'save', {
-        token: sessionToken,
-        dados: dadosCriptografados
+      await setDoc(doc(db, 'userData', currentUser.uid), {
+        dados: dadosCriptografados,
+        updatedAt: new Date().toISOString()
       })
       
-      const result = await response.json()
-      return result.success
+      return true
     } catch (error) {
       console.error('Save error:', error)
       return false
@@ -285,14 +326,14 @@ export const FirebaseManager = {
   },
 
   async carregarDados(): Promise<string | null> {
-    if (!currentUser || !userEncryptionKey || !sessionToken) return null
+    if (!currentUser || !userEncryptionKey) return null
 
     try {
-      const response = await apiCall('dados', 'load', { token: sessionToken })
-      const result = await response.json()
+      const docRef = doc(db, 'userData', currentUser.uid)
+      const docSnap = await getDoc(docRef)
 
-      if (result.success && result.dados) {
-        return await decryptData(result.dados, userEncryptionKey)
+      if (docSnap.exists() && docSnap.data().dados) {
+        return await decryptData(docSnap.data().dados, userEncryptionKey)
       }
 
       return null

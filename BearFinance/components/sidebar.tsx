@@ -50,8 +50,8 @@ export function Sidebar({ activeSection, onSectionChange, isSaving }: SidebarPro
       {/* Header */}
       <div className="p-5 border-b border-border flex justify-center">
         <img 
-          src="/images/logo-gante.png" 
-          alt="Gante" 
+          src="/images/logo-pro-interface.png" 
+          alt="Pro Interface Softwares" 
           className="h-10 w-auto"
         />
       </div>
